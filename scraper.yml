@@ -1,0 +1,32 @@
+name: Adidoso
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    env:
+      NOTION_AUTH_TOKEN: ${{ secrets.NOTION_AUTH_TOKEN }}
+      NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+      CRON_SCHEDULE: "*/5 * * * *"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install browser
+        run: npx playwright install firefox
+
+      - name: Run scraper
+        run: node index.js
